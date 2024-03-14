@@ -12,4 +12,7 @@ urlpatterns = [
 
     path('product/',views.ProductModelView.as_view(),name='product_model'),
     path('product/<int:pk>/',views.ProductModelDetailView.as_view(),name='product_model_detail'),
+
+    path('login/',views.LoginView.as_view(),name='login'),
+    path('logout/',views.LogoutView.as_view(),name='logout'),
 ]

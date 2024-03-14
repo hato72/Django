@@ -2,6 +2,7 @@ from rest_framework import serializers
 from api.models import Item,Product
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 
 class ProductModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,4 +66,23 @@ class ItemModelSerializer(serializers.ModelSerializer):
         discounted_price = data.get('discounted_price',self.instance.discounted_price if self.instance is not None else None)
         if price < discounted_price:
             raise serializers.ValidationError("割引価格は本来の価格以下にして下さい")
+        return data
+    
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(write_only = True)
+    password = serializers.CharField(style={'input_type':'password'},write_only=True)
+
+    def validate(self,data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            user = authenticate(request=self.context.get('request'),username=username,password=password)
+            if not user:
+                raise serializers.ValidationError('ログインに失敗しました')
+        else:
+            raise serializers.ValidationError("ユーザーとパスワードを入力してください")
+        
+        data['user'] = user
         return data
