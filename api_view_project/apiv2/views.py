@@ -7,6 +7,7 @@ from api.models import Item,Product
 from rest_framework import permissions
 from .permissions import CustomPermission,ProductPermission
 from django.contrib.auth import get_user_model,login,logout
+from rest_framework.authentication import TokenAuthentication
 
 # Create your views here.
 
@@ -71,6 +72,8 @@ class ItemModelView(BaseListView):
 class ProductModelView(BaseListView):
     serializer_class = ProductModelSerializer
     model = Product
+    authentication_classes = [TokenAuthentication,]
+
 
 class UserModelView(BaseListView):
     serializer_class = UserModelSerializer
